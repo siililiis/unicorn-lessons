@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="uk"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unicorn Squad · Materjalide leht (template)</title>
+<style>
+  :root{
+    --green-dark:#1f7a5a;
+    --green:#4aa984;
+    --green-light:#e8f5ee;
+    --peach:#fdf2e7;
+    --peach-dark:#b5502a;
+    --ink:#2b3230;
+    --muted:#8d9a95;
+    --line:#d9e6e0;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:#eceeed;
+    font-family:"Helvetica Neue",Arial,"Segoe UI",sans-serif;
+    color:var(--ink);
+    padding:28px 12px 60px;
+  }
+
+  /* ---------- tööriistariba (ei prindi) ---------- */
+  .toolbar{
+    position:sticky; top:0; z-index:50;
+    max-width:900px; margin:0 auto 14px;
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+    background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:10px 12px; box-shadow:0 2px 10px rgba(0,0,0,.06);
+    font-size:13px;
+  }
+  .toolbar strong{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+  .toolbar button{
+    font:inherit; cursor:pointer; border:1px solid var(--line); background:#f7faf9;
+    color:var(--ink); border-radius:8px; padding:6px 11px;
+  }
+  .toolbar button:hover{background:var(--green-light);border-color:var(--green)}
+  .toolbar button.primary{background:var(--green-dark);border-color:var(--green-dark);color:#fff}
+  .toolbar button.primary:hover{background:#186349}
+  #fitBadge{
+    margin-left:auto; font-size:11.5px; color:#4a6b5e; background:var(--green-light);
+    border:1px solid #c8e3d6; border-radius:999px; padding:5px 10px; white-space:nowrap;
+  }
+  #fitBadge.warn{background:#fdeceb;border-color:#f2c7c3;color:#9c3b32}
+  .hint{max-width:900px;margin:0 auto 18px;font-size:12.5px;color:#6d7a75;line-height:1.6}
+
+  /* ---------- leht ---------- */
+  .page{
+    width:210mm; height:297mm;
+    margin:0 auto; background:#fff;
+    box-shadow:0 6px 26px rgba(0,0,0,.13);
+    display:flex; flex-direction:column;
+    overflow:hidden;
+  }
+
+  /* ---------- päis: ilma taustata, pilt väikse pildina nurgas ---------- */
+  .head{
+    flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; gap:8mm;
+    padding:13mm 13mm 6mm;
+  }
+  .head-text{min-width:0}
+  .lesson-title{
+    font-size:36px; line-height:1.04; font-weight:800; letter-spacing:-.015em;
+    margin:0; color:var(--ink);
+  }
+  .lesson-ua{
+    margin:4px 0 0; font-size:15.5px; font-weight:600; color:var(--green-dark); letter-spacing:.01em;
+  }
+  .lesson-ua-en{
+    display:block; margin-top:2px;
+    font-size:11.5px; font-weight:400; font-style:italic; color:var(--muted);
+  }
+  .thumb{
+    flex:0 0 auto; width:30mm; height:30mm; border-radius:12px; overflow:hidden;
+    background:var(--green-light); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative;
+  }
+  .thumb img{width:100%; height:100%; object-fit:cover; display:none}
+  .thumb.has-image{background:none; border:none}
+  .thumb.has-image img{display:block}
+  .thumb.has-image .thumb-hint{display:none}
+  .thumb-hint{font-size:10.5px; color:#7d8c86; text-align:center; line-height:1.3; padding:0 4px}
+  .head-rule{flex:0 0 auto; margin:0 13mm; border-top:1px solid var(--line)}
+
+  /* kompaktne režiim: lülitub ise sisse, kui vahendeid on palju */
+  .page.compact .head{padding:9mm 13mm 4.5mm}
+  .page.compact .lesson-title{font-size:30px}
+  .page.compact .lesson-ua{font-size:14px}
+  .page.compact .thumb{width:24mm; height:24mm}
+  .page.compact .content{padding-top:5mm}
+  .page.compact .footer{margin-bottom:5mm; padding-top:3mm}
+  .page.compact .footer-logo{height:8mm}
+
+  /* ---------- sisu ---------- */
+  .content{flex:1 1 auto; min-height:0; padding:6mm 13mm 3mm; overflow:hidden}
+  #fitwrap{transform-origin:top left; width:100%}
+  .columns{display:grid; grid-template-columns:1fr 1fr; gap:5mm; align-items:start}
+
+  .col{border-radius:14px; padding:5mm 5mm 4.5mm; position:relative}
+  .col.left{background:var(--green-light)}
+  .col.right{background:var(--peach)}
+
+  .col-head{margin:0 0 3.5mm}
+  .col-title{margin:0; font-size:17px; font-weight:800; line-height:1.15}
+  .col.left .col-title{color:var(--green-dark)}
+  .col.right .col-title{color:var(--peach-dark)}
+  .col-title-en{
+    display:block; margin-top:3px;
+    font-size:12px; font-style:italic; font-weight:400; color:var(--muted);
+  }
+
+  .block{position:relative; margin:0 0 3mm}
+  .block-title{
+    font-size:12.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+    margin:0 0 1.8mm; padding-bottom:1.1mm; border-bottom:1px solid rgba(0,0,0,.08);
+  }
+  .col.left .block-title{color:var(--green-dark)}
+  .col.right .block-title{color:var(--peach-dark)}
+  .block-title .en{
+    display:inline; font-size:11px; font-weight:400; font-style:italic;
+    text-transform:none; letter-spacing:0; color:var(--muted); margin-left:6px;
+  }
+
+  ul.items{list-style:none; margin:0; padding:0}
+  ul.items li{position:relative; padding:0 16px 1.3mm 11px; line-height:1.12}
+  ul.items li::before{
+    content:""; position:absolute; left:1px; top:6px;
+    width:3.5px; height:3.5px; border-radius:50%; background:var(--ink); opacity:.55;
+  }
+  .ua{display:block; font-size:14px; line-height:1.13}
+  .en{display:block; font-size:11.5px; font-style:italic; color:var(--muted); margin-top:0; line-height:1.14}
+  /* variant: ingliskeelne tõlge samal real (mahub rohkem, kiri saab suurem olla) */
+  .page.inline-en ul.items li{padding-bottom:1.9mm}
+  .page.inline-en .ua{display:inline}
+  .page.inline-en .en{display:inline; margin-left:5px}
+  .page.inline-en .en:not(:empty)::before{content:"· "}
+  .en:empty{display:none}
+
+  .row-del{
+    position:absolute; right:0; top:2px; width:16px; height:16px; line-height:14px;
+    border:1px solid var(--line); background:#fff; color:#a33; border-radius:50%;
+    font-size:11px; text-align:center; cursor:pointer; opacity:0; transition:opacity .12s; padding:0;
+  }
+  ul.items li:hover .row-del{opacity:1}
+
+  /* ridade lisamise nupud on hõljuvad — nad ei võta lehel ruumi ja ei mõjuta mahutamist */
+  .block-tools{
+    position:absolute; right:2px; bottom:-3.2mm; z-index:6;
+    display:flex; gap:4px; opacity:0; transition:opacity .12s;
+  }
+  .block:hover .block-tools,.block-tools:focus-within{opacity:1}
+  .add-row,.paste-into,.del-block,.col-tools button{
+    font:inherit; font-size:10.5px; cursor:pointer; margin:0;
+    background:#fff; border:1px dashed rgba(0,0,0,.25); color:#5d6b66;
+    border-radius:8px; padding:2px 8px; box-shadow:0 1px 3px rgba(0,0,0,.08);
+  }
+  .add-row:hover,.paste-into:hover,.col-tools button:hover{background:var(--green-light); border-style:solid}
+  .del-block{color:#a33}
+  .del-block:hover{background:#fdeceb; border-style:solid; border-color:#e0a9a2}
+
+  /* veeru enda nupud (plokk / pilt juurde) — hõljuvad, ei võta ruumi */
+  .col-tools{
+    position:absolute; left:5mm; bottom:-3.2mm; z-index:6;
+    display:flex; gap:4px; opacity:0; transition:opacity .12s;
+  }
+  .col:hover .col-tools,.col-tools:focus-within{opacity:1}
+
+  /* pildiplokk */
+  .img-slot{
+    position:relative; border-radius:10px; overflow:hidden; background:var(--green-light);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .img-block .img-slot:not(.has-image){aspect-ratio:4/3; border:1px dashed rgba(0,0,0,.22)}
+  .img-slot img{display:none; width:100%; height:auto; max-height:75mm; object-fit:cover}
+  .img-slot.has-image{background:none}
+  .img-slot.has-image img{display:block}
+  .img-slot.has-image .thumb-hint{display:none}
+  .img-cap{
+    margin:1.5mm 0 0; font-size:11.5px; line-height:1.2; color:var(--ink);
+  }
+  .img-cap:empty::before{content:"pildi allkiri (valikuline)"; color:var(--muted); font-style:italic}
+  .img-cap-en{display:block; font-size:10.5px; font-style:italic; color:var(--muted)}
+
+  /* teade "võta tagasi" */
+  .toast{
+    position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(20px);
+    background:#22322c; color:#fff; border-radius:10px; padding:9px 12px; font-size:12.5px;
+    display:flex; align-items:center; gap:10px; z-index:200; opacity:0; pointer-events:none;
+    transition:opacity .15s, transform .15s; box-shadow:0 6px 20px rgba(0,0,0,.25);
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0); pointer-events:auto}
+  .toast button{
+    font:inherit; cursor:pointer; background:#fff; border:none; border-radius:7px; padding:4px 10px; color:#22322c;
+  }
+
+  .footer{
+    flex:0 0 auto;
+    margin:0 13mm 5mm; padding-top:2.5mm; border-top:1px solid var(--line);
+    display:flex; justify-content:center; align-items:center;
+  }
+  .footer-logo{height:9.5mm; width:auto; display:block}
+
+  [contenteditable]:focus{outline:2px solid rgba(74,169,132,.65); outline-offset:2px; border-radius:3px}
+  .locked .row-del,.locked .block-tools,.locked .col-tools{display:none}
+  .locked .thumb{cursor:default}
+
+  /* ---------- kleepimise aken ---------- */
+  .modal{
+    position:fixed; inset:0; z-index:100; display:none;
+    background:rgba(20,35,30,.45); padding:24px; overflow:auto;
+  }
+  .modal.open{display:flex; align-items:flex-start; justify-content:center}
+  .modal-box{
+    background:#fff; border-radius:14px; padding:20px 22px; width:min(680px,100%);
+    box-shadow:0 12px 40px rgba(0,0,0,.25); font-size:13px; margin-top:5vh;
+  }
+  .modal-box h3{margin:0 0 6px; font-size:16px; color:var(--green-dark)}
+  .modal-box p{margin:0 0 12px; color:#6d7a75; line-height:1.55; font-size:12.5px}
+  .modal-box code{background:#f2f6f4; padding:1px 5px; border-radius:4px; font-size:11.5px}
+  .modal-row{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-bottom:10px}
+  .modal-box select{font:inherit; padding:5px 8px; border:1px solid var(--line); border-radius:8px; background:#fff}
+  .modal-box label{display:inline-flex; align-items:center; gap:5px; cursor:pointer}
+  .modal-box textarea{
+    width:100%; min-height:190px; font:13px/1.45 "SF Mono",Consolas,monospace;
+    border:1px solid var(--line); border-radius:10px; padding:10px; resize:vertical;
+  }
+  .modal-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:12px}
+  .modal-actions button{
+    font:inherit; cursor:pointer; border:1px solid var(--line); background:#f7faf9;
+    border-radius:8px; padding:7px 14px;
+  }
+  .modal-actions button.primary{background:var(--green-dark);border-color:var(--green-dark);color:#fff}
+
+  /* ---------- print ---------- */
+  @page{size:A4; margin:0}
+  @media print{
+    body{background:#fff; padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+    .toolbar,.hint,.modal,.toast,.row-del,.block-tools,.col-tools{display:none !important}
+    .img-block .img-slot:not(.has-image){display:none}
+    .img-cap:empty{display:none}
+    .thumb:not(.has-image){visibility:hidden}
+    .page{width:210mm; height:297mm; box-shadow:none; margin:0; page-break-after:avoid}
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <strong>Template</strong>
+  <button onclick="pickImage()">Vaheta pilt</button>
+  <button class="primary" onclick="openPaste()">Kleebi nimekiri</button>
+  <button onclick="copyLeftToRight()">Vasak → parem</button>
+  <button onclick="addBlock('left')">+ Plokk ←</button>
+  <button onclick="addBlock('right')">+ Plokk →</button>
+  <button onclick="addImageBlock('left')">+ Pilt ←</button>
+  <button onclick="addImageBlock('right')">+ Pilt →</button>
+  <button id="inlineBtn" onclick="toggleInline()">EN samal real</button>
+  <button onclick="window.print()">Prindi / PDF</button>
+  <button onclick="saveCopy()">Salvesta koopia</button>
+  <input type="file" id="imgInput" accept="image/*" hidden="">
+  <span id="fitBadge" class="">mahub ühele lehele · kiri 14.0 px (100%)</span>
+</div>
+
+<p class="hint">
+  <b>Kleebi nimekiri</b> lisab terve loetelu korraga — iga vahend eraldi real, ukraina ja inglise keel eraldatud märgiga <code>|</code> või tabiga (Excelist/Sheetsist tuleb tab automaatselt).
+  Terve nimekirja võid kleepida ka otse mõnele reale — mitmerealine tekst läheb automaatselt eraldi ridadeks.
+  Kliki tekstil ja kirjuta üle; <b>Enter</b> lisab rea, <b>Tab</b> viib ukraina realt inglise tõlkele, hiirega rea peal ilmub × kustutamiseks.
+  Leht mahutab sisu ise ühele A4-le — kui vahendeid on palju, väheneb kiri automaatselt (näidik paremal ülal).
+  Ploki eemaldamiseks vii hiir ploki peale ja vajuta <b>× plokk</b> (saad kohe tagasi võtta).
+  Veeru alla saad lisada plokke ja pildiplokke — vii hiir veeru peale või kasuta tööriistariba nuppe <b>+ Plokk</b> / <b>+ Pilt</b>.
+</p>
+
+<div class="page" id="page">
+
+  <!-- ============ PÄIS: tunni nimi (EN) + "Список матеріалів" + väike pilt nurgas ============ -->
+  <header class="head" id="head">
+    <div class="head-text">
+      <h1 class="lesson-title" contenteditable="true">Electric Circuit</h1>
+      <p class="lesson-ua" contenteditable="true">Список матеріалів
+        <span class="lesson-ua-en" contenteditable="true">List of materials</span>
+      </p>
+    </div>
+    <div class="thumb" id="thumb" onclick="pickImage()" title="Kliki, et pilt valida või vahetada">
+      <img id="thumbImg" alt="">
+      <span class="thumb-hint no-print">kliki<br>pildi<br>lisamiseks</span>
+    </div>
+  </header>
+  <div class="head-rule"></div>
+
+  <!-- ============ SISU: kaks veergu ============ -->
+  <div class="content">
+   <div id="fitwrap" style="">
+    <div class="columns">
+
+      <!-- ---------- VASAK ---------- -->
+      <section class="col left" id="col-left">
+        <div class="col-head">
+          <h2 class="col-title" contenteditable="true">У коробці є
+            <span class="col-title-en" contenteditable="true">In the box</span>
+          </h2>
+        </div>
+
+        <div class="block">
+          <div class="block-title" contenteditable="true">Багаторазові матеріали <span class="en" contenteditable="true">Reusable</span></div>
+          <ul class="items"><li><span class="ua" contenteditable="true">6× набір Snap Circuits</span><span class="en" contenteditable="true">6× Snap Circuits kit</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">18× батарейка AA у наборі Snap Circuits</span><span class="en" contenteditable="true">18× AA battery inside the Snap Circuits kit</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">40× мідна смужка</span><span class="en" contenteditable="true">40× copper strip</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">40× цинкова смужка</span><span class="en" contenteditable="true">40× zinc strip</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">50× провід із затискачами «крокодил»</span><span class="en" contenteditable="true">50× alligator clip lead</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">4× ножиці</span><span class="en" contenteditable="true">4× scissors</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">1× мультиметр</span><span class="en" contenteditable="true">1× multimeter</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">10× світлодіод</span><span class="en" contenteditable="true">10× LED</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">4× клейовий стрижень</span><span class="en" contenteditable="true">4× glue stick</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li></ul>
+          <div class="block-tools no-print"><button class="add-row" onclick="addRow(this)">+ rida</button><button class="paste-into" onclick="openPaste(this)">kleebi nimekiri</button><button class="del-block" onclick="delBlock(this)" title="Eemalda kogu plokk">× plokk</button></div>
+        </div>
+
+        <div class="block">
+          <div class="block-title" contenteditable="true">Витратні матеріали <span class="en" contenteditable="true">Consumables</span></div>
+          <ul class="items"><li><span class="ua" contenteditable="true">10× аркуш кольорового паперу</span><span class="en" contenteditable="true">10× sheet of colored paper</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">1× стаканчик зубочисток</span><span class="en" contenteditable="true">1× cup of toothpicks</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li></ul>
+          <div class="block-tools no-print"><button class="add-row" onclick="addRow(this)">+ rida</button><button class="paste-into" onclick="openPaste(this)">kleebi nimekiri</button><button class="del-block" onclick="delBlock(this)" title="Eemalda kogu plokk">× plokk</button></div>
+        </div>
+
+        <div class="block"><div class="block-title" contenteditable="true">Додатково потрібно <font color="#8d9a95"><span style="caret-color: rgb(141, 154, 149); font-size: 11px; font-weight: 400; letter-spacing: normal; text-transform: none;"><i>Additionally needed</i></span></font></div><ul class="items"><li><span class="ua" contenteditable="true">Різні овочі та фрукти (картопля та лимони добре підходять)</span><span class="en" contenteditable="true">Different vegetables and fruits (potatoes and lemons work well)</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li></ul><div class="block-tools no-print"><button class="add-row" onclick="addRow(this)">+ rida</button><button class="paste-into" onclick="openPaste(this)">kleebi nimekiri</button><button class="del-block" onclick="delBlock(this)" title="Eemalda kogu plokk">× plokk</button></div></div><div class="col-tools no-print"><button onclick="addBlock('left')">+ plokk</button><button onclick="addImageBlock('left')">+ pilt</button></div>
+      </section>
+
+      <!-- ---------- PAREM ---------- -->
+      <section class="col right" id="col-right">
+        <div class="col-head">
+          <h2 class="col-title" contenteditable="true">Перевір, що все повертається в коробку
+            <span class="col-title-en" contenteditable="true">Check that everything goes back in the box</span>
+          </h2>
+        </div>
+
+        <div class="block">
+          <ul class="items"><li><span class="ua" contenteditable="true">6× набір Snap Circuits</span><span class="en" contenteditable="true">6× Snap Circuits kit</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">18× батарейка AA у наборі Snap Circuits</span><span class="en" contenteditable="true">18× AA battery inside the Snap Circuits kit</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">40× мідна смужка</span><span class="en" contenteditable="true">40× copper strip</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">40× цинкова смужка</span><span class="en" contenteditable="true">40× zinc strip</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">50× провід із затискачами «крокодил»</span><span class="en" contenteditable="true">50× alligator clip lead</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">4× ножиці</span><span class="en" contenteditable="true">4× scissors</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">1× мультиметр</span><span class="en" contenteditable="true">1× multimeter</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">10× світлодіод</span><span class="en" contenteditable="true">10× LED</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">4× клейовий стрижень, якщо залишилися</span><span class="en" contenteditable="true">4× glue stick, if left over</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">аркуші кольорового паперу, якщо залишилися</span><span class="en" contenteditable="true">sheets of colored paper, if left over</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li><li><span class="ua" contenteditable="true">зубочистки, якщо залишилися</span><span class="en" contenteditable="true">toothpicks, if left over</span><button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button></li></ul>
+          <div class="block-tools no-print"><button class="add-row" onclick="addRow(this)">+ rida</button><button class="paste-into" onclick="openPaste(this)">kleebi nimekiri</button><button class="del-block" onclick="delBlock(this)" title="Eemalda kogu plokk">× plokk</button></div>
+        </div>
+
+        <div class="col-tools no-print"><button onclick="addBlock('right')">+ plokk</button><button onclick="addImageBlock('right')">+ pilt</button></div>
+      </section>
+
+    </div>
+   </div>
+  </div>
+
+  <div class="footer"><img class="footer-logo" alt="HK Unicorn Squad" src="data:image/png;base64,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"></div>
+</div>
+
+<!-- ============ KLEEPIMISE AKEN ============ -->
+<div class="modal no-print" id="modal">
+  <div class="modal-box">
+    <h3>Kleebi vahendite nimekiri</h3>
+    <p>
+      Iga vahend eraldi real. Ukraina ja inglise keel eralda märgiga <code>|</code> või tabiga —
+      nt <code>1× сабвуфер | 1× subwoofer</code>. Ainult ukraina keeles read on samuti ok, inglise rida jääb siis tühjaks.
+    </p>
+    <div class="modal-row">
+      <label>Kuhu: <select id="pasteTarget"><option value="0">Vasak veerg · Багаторазові матеріали</option><option value="1">Vasak veerg · Витратні матеріали</option><option value="2">Vasak veerg · Додатково потрібно</option><option value="3">Parem veerg</option></select></label>
+      <label><input type="radio" name="pasteMode" value="append" checked=""> Lisa olemasolevatele</label>
+      <label><input type="radio" name="pasteMode" value="replace"> Asenda kogu loend</label>
+    </div>
+    <div class="modal-row">
+      <label><input type="checkbox" id="altLines"> Iga teine rida on ingliskeelne tõlge</label>
+    </div>
+    <textarea id="pasteArea" placeholder="1× сабвуфер | 1× subwoofer
+1× підсилювач для сабвуфера | 1× amplifier for the subwoofer
+5× лазерний модуль | 5× laser module"></textarea>
+    <div class="modal-actions">
+      <button onclick="closePaste()">Loobu</button>
+      <button class="primary" onclick="applyPaste()">Lisa nimekiri</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =============== read/write abi =============== */
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function newRow(ua,en){
+  var li=document.createElement('li');
+  li.innerHTML='<span class="ua" contenteditable="true">'+esc(ua||'')+'</span>'+
+               '<span class="en" contenteditable="true">'+esc(en||'')+'</span>'+
+               '<button class="row-del" onclick="delRow(this)" title="Kustuta rida">×</button>';
+  return li;
+}
+function addRow(btn){
+  var ul=btn.closest('.block').querySelector('ul.items');
+  var li=newRow(); ul.appendChild(li); li.querySelector('.ua').focus(); fit();
+}
+function delRow(btn){
+  var li=btn.closest('li'), ul=li.parentNode;
+  li.remove();
+  if(!ul.children.length) ul.appendChild(newRow());
+  fit();
+}
+function addBlock(side){
+  var col=document.getElementById('col-'+side);
+  var block=document.createElement('div');
+  block.className='block';
+  block.innerHTML=
+    '<div class="block-title" contenteditable="true">Uus plokk <span class="en" contenteditable="true">New block</span></div>'+
+    '<ul class="items"></ul>'+
+    '<div class="block-tools no-print"><button class="add-row" onclick="addRow(this)">+ rida</button>'+
+    '<button class="paste-into" onclick="openPaste(this)">kleebi nimekiri</button>'+
+    '<button class="del-block" onclick="delBlock(this)" title="Eemalda kogu plokk">× plokk</button></div>';
+  col.insertBefore(block, col.querySelector('.col-tools'));
+  block.querySelector('ul.items').appendChild(newRow());
+  block.querySelector('.block-title').focus();
+  fit();
+}
+
+/* =============== ploki eemaldamine (koos tagasivõtmisega) =============== */
+var lastRemoved=null, toastTimer;
+function delBlock(btn){
+  var block=btn.closest('.block'), parent=block.parentNode;
+  lastRemoved={node:block, parent:parent, next:block.nextSibling};
+  block.remove();
+  showToast('Plokk eemaldatud.');
+  fit();
+}
+function undoRemove(){
+  if(!lastRemoved) return;
+  lastRemoved.parent.insertBefore(lastRemoved.node, lastRemoved.next);
+  lastRemoved=null; hideToast(); fit();
+}
+function showToast(text){
+  var el=document.getElementById('toast');
+  document.getElementById('toastText').textContent=text;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(hideToast, 9000);
+}
+function hideToast(){ document.getElementById('toast').classList.remove('show'); }
+
+/* =============== pildiplokk =============== */
+function addImageBlock(side){
+  var col=document.getElementById('col-'+side);
+  var block=document.createElement('div');
+  block.className='block img-block';
+  block.innerHTML=
+    '<div class="img-slot" onclick="pickBlockImage(this)" title="Kliki, et pilt valida või vahetada">'+
+      '<img alt="">'+
+      '<span class="thumb-hint no-print">kliki pildi lisamiseks</span>'+
+    '</div>'+
+    '<div class="img-cap" contenteditable="true"></div>'+
+    '<div class="block-tools no-print">'+
+      '<button class="add-row" onclick="pickBlockImage(this)">vaheta pilt</button>'+
+      '<button class="del-block" onclick="delBlock(this)" title="Eemalda kogu plokk">× plokk</button>'+
+    '</div>';
+  col.insertBefore(block, col.querySelector('.col-tools'));
+  fit();
+}
+var blockImgTarget=null;
+var blockImgInput=document.createElement('input');
+blockImgInput.type='file'; blockImgInput.accept='image/*'; blockImgInput.style.display='none';
+document.body.appendChild(blockImgInput);
+blockImgInput.addEventListener('change', function(){
+  var f=this.files[0];
+  if(!f||!blockImgTarget) return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    blockImgTarget.querySelector('img').src=ev.target.result;
+    blockImgTarget.classList.add('has-image');
+    fit();
+  };
+  r.readAsDataURL(f);
+  this.value='';
+});
+function pickBlockImage(el){
+  var block=el.closest('.block');
+  blockImgTarget=block.querySelector('.img-slot');
+  blockImgInput.click();
+}
+
+/* =============== klaviatuur =============== */
+document.addEventListener('keydown', function(e){
+  var el=e.target;
+  if(!el.classList) return;
+  if(e.key==='Enter' && (el.classList.contains('ua')||el.classList.contains('en'))){
+    e.preventDefault();
+    var li=el.closest('li'), row=newRow();
+    li.parentNode.insertBefore(row, li.nextSibling);
+    row.querySelector('.ua').focus(); fit();
+  }
+  if(e.key==='Tab' && el.classList.contains('ua')){
+    e.preventDefault(); el.closest('li').querySelector('.en').focus();
+  }
+  if(e.key==='Escape') closePaste();
+});
+
+/* =============== otsekleepimine: mitu rida = mitu vahendit =============== */
+document.addEventListener('paste', function(e){
+  var el=e.target;
+  if(!el || !el.isContentEditable) return;
+  var text=(e.clipboardData||window.clipboardData).getData('text/plain');
+  if(!text) return;
+  e.preventDefault();
+
+  var li=el.closest && el.closest('li');
+  var multi=/\r?\n/.test(text.trim());
+
+  if(li && multi){
+    var rows=parseList(text,false), ul=li.parentNode, after=li;
+    var first=rows.shift();
+    li.querySelector('.ua').textContent=first.ua;
+    if(first.en) li.querySelector('.en').textContent=first.en;
+    rows.forEach(function(r){
+      var nr=newRow(r.ua,r.en);
+      ul.insertBefore(nr, after.nextSibling); after=nr;
+    });
+    fit(); return;
+  }
+  document.execCommand('insertText', false, text.replace(/\s*\r?\n\s*/g,' ').trim());
+  fit();
+});
+
+/* =============== nimekirja parsimine =============== */
+function parseList(text, alternating){
+  var lines=text.replace(/\r/g,'').split('\n')
+    .map(function(l){ return l.replace(/^[\s•·•‣▪–—*]+/,'').replace(/\s+$/,''); })
+    .filter(function(l){ return l.trim().length; });
+  var out=[];
+  if(alternating){
+    for(var i=0;i<lines.length;i+=2){
+      out.push({ua:lines[i].trim(), en:(lines[i+1]||'').trim()});
+    }
+    return out;
+  }
+  lines.forEach(function(l){
+    var parts=l.split(/\s*\|\s*|\t+/);
+    out.push({ua:(parts[0]||'').trim(), en:(parts[1]||'').trim()});
+  });
+  return out;
+}
+
+/* =============== kleepimise aken =============== */
+var pasteBlocks=[];
+function openPaste(btn){
+  var modal=document.getElementById('modal');
+  var sel=document.getElementById('pasteTarget');
+  pasteBlocks=[]; sel.innerHTML='';
+  [['left','Vasak'],['right','Parem']].forEach(function(side){
+    var col=document.getElementById('col-'+side[0]);
+    col.querySelectorAll('.block').forEach(function(b,i){
+      if(!b.querySelector('ul.items')) return;      // pildiplokid välja
+      var t=b.querySelector('.block-title');
+      var name=side[1]+' veerg'+(t?' · '+t.childNodes[0].textContent.trim():(i?' · plokk '+(i+1):''));
+      pasteBlocks.push(b);
+      var o=document.createElement('option');
+      o.value=pasteBlocks.length-1; o.textContent=name; sel.appendChild(o);
+    });
+  });
+  if(btn && btn.closest){
+    var b=btn.closest('.block'), idx=pasteBlocks.indexOf(b);
+    if(idx>=0) sel.value=idx;
+  }
+  document.getElementById('pasteArea').value='';
+  modal.classList.add('open');
+  setTimeout(function(){ document.getElementById('pasteArea').focus(); },50);
+}
+function closePaste(){ document.getElementById('modal').classList.remove('open'); }
+document.getElementById('modal').addEventListener('mousedown', function(e){ if(e.target===this) closePaste(); });
+
+function applyPaste(){
+  var idx=+document.getElementById('pasteTarget').value;
+  var block=pasteBlocks[idx];
+  if(!block){ closePaste(); return; }
+  var alt=document.getElementById('altLines').checked;
+  var rows=parseList(document.getElementById('pasteArea').value, alt);
+  if(!rows.length){ closePaste(); return; }
+  var mode=document.querySelector('input[name="pasteMode"]:checked').value;
+  var ul=block.querySelector('ul.items');
+  if(mode==='replace') ul.innerHTML='';
+  else {
+    // eemalda tühjad read lõpust
+    Array.prototype.slice.call(ul.children).forEach(function(li){
+      if(!li.querySelector('.ua').textContent.trim() && !li.querySelector('.en').textContent.trim()) li.remove();
+    });
+  }
+  rows.forEach(function(r){ ul.appendChild(newRow(r.ua,r.en)); });
+  closePaste(); fit();
+}
+
+/* =============== vasak -> parem =============== */
+function copyLeftToRight(){
+  var rows=[];
+  document.querySelectorAll('#col-left ul.items li').forEach(function(li){
+    var ua=li.querySelector('.ua').textContent.trim(), en=li.querySelector('.en').textContent.trim();
+    if(ua||en) rows.push({ua:ua,en:en});
+  });
+  if(!rows.length) return;
+  var right=document.getElementById('col-right');
+  var block=right.querySelector('.block') || (addBlock('right'), right.querySelector('.block'));
+  var ul=block.querySelector('ul.items');
+  ul.innerHTML='';
+  rows.forEach(function(r){ ul.appendChild(newRow(r.ua,r.en)); });
+  fit();
+}
+
+/* =============== päisepilt =============== */
+var imgInput=document.getElementById('imgInput');
+var thumb=document.getElementById('thumb'), thumbImg=document.getElementById('thumbImg');
+function pickImage(){ imgInput.click(); }
+imgInput.addEventListener('change', function(){ if(this.files[0]) setImage(this.files[0]); });
+function setImage(file){
+  var r=new FileReader();
+  r.onload=function(ev){
+    thumbImg.src=ev.target.result;
+    thumb.classList.add('has-image'); fit();
+  };
+  r.readAsDataURL(file);
+}
+['dragover','dragenter'].forEach(function(ev){ thumb.addEventListener(ev, function(e){ e.preventDefault(); }); });
+thumb.addEventListener('drop', function(e){
+  e.preventDefault();
+  var f=e.dataTransfer && e.dataTransfer.files[0];
+  if(f && f.type.indexOf('image')===0) setImage(f);
+});
+
+/* =============== AUTOMAATNE MAHUTAMINE ÜHELE LEHELE =============== */
+var MIN_SCALE=0.55;
+function availHeight(){
+  var content=document.querySelector('.content');
+  var cs=getComputedStyle(content);
+  return content.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+}
+function measure(k){
+  var wrap=document.getElementById('fitwrap');
+  wrap.style.width=(100/k)+'%';
+  wrap.style.transform='scale('+k+')';
+  return wrap.offsetHeight*k;
+}
+function solve(avail){
+  if(measure(1)<=avail+0.5) return {k:1, ok:true};
+  var lo=MIN_SCALE, hi=1;
+  for(var i=0;i<16;i++){
+    var mid=(lo+hi)/2;
+    if(measure(mid)<=avail+0.5) lo=mid; else hi=mid;
+  }
+  return {k:lo, ok:(measure(lo)<=avail+0.5)};
+}
+function fit(){
+  var content=document.querySelector('.content'), wrap=document.getElementById('fitwrap'), page=document.getElementById('page');
+  if(!content||!wrap) return;
+  page.classList.remove('compact');
+  var r=solve(availHeight());
+  if(r.k<0.95){                       // vähegi kitsas → väiksem päis, et kiri saaks suurem jääda
+    page.classList.add('compact');
+    r=solve(availHeight());
+  }
+  var badge=document.getElementById('fitBadge');
+  if(badge){
+    var pct=Math.round(r.k*100);
+    var px=(14*r.k).toFixed(1);          // tegelik kirjasuurus lehel
+    if(r.ok){
+      badge.className='';
+      badge.textContent='mahub ühele lehele · kiri '+px+' px ('+pct+'%)';
+    }else{
+      badge.className='warn';
+      badge.textContent='ei mahu — jäta vahendeid välja (kiri '+px+' px)';
+    }
+  }
+}
+var fitTimer;
+function fitSoon(){ clearTimeout(fitTimer); fitTimer=setTimeout(fit,180); }
+document.addEventListener('input', fitSoon);
+window.addEventListener('resize', fitSoon);
+window.addEventListener('load', function(){ fit(); setTimeout(fit,300); });
+window.addEventListener('beforeprint', fit);
+document.addEventListener('DOMContentLoaded', fit);
+
+/* =============== pildi allkiri: Enter ei tekita <div> =============== */
+document.addEventListener('keydown', function(e){
+  if(e.key==='Enter' && e.target.classList && e.target.classList.contains('img-cap')){
+    e.preventDefault();
+  }
+}, true);
+
+/* =============== EN samal real =============== */
+function toggleInline(){
+  var on=document.getElementById('page').classList.toggle('inline-en');
+  document.getElementById('inlineBtn').textContent = on ? 'EN eraldi real' : 'EN samal real';
+  fit();
+}
+
+/* =============== salvesta koopia =============== */
+function saveCopy(){
+  var title=(document.querySelector('.lesson-title').innerText||'materjalid').trim();
+  var name=title.toLowerCase().replace(/[^a-z0-9а-яіїєґ]+/gi,'-').replace(/^-|-$/g,'')||'materjalid';
+  var wrap=document.getElementById('fitwrap');
+  var w=wrap.style.width, t=wrap.style.transform;
+  wrap.style.width=''; wrap.style.transform='';           // salvesta ilma skaalata, avamisel arvutatakse uuesti
+  var html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+  wrap.style.width=w; wrap.style.transform=t;
+  var blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=name+'-materjalid.html';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+}
+</script><input type="file" accept="image/*" style="display: none;"><input type="file" accept="image/*" style="display: none;">
+<div class="toast no-print" id="toast"><span id="toastText"></span><button onclick="undoRemove()">Võta tagasi</button></div>
+
+
+
+</body></html>
